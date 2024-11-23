@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Heavy Task</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div>CPU Usage: <span id="cpuUsage">Loading...</span>%</div>
+  <button id="runHeavyTask">Run Heavy Task</button>
+  <div class="progress-bar">
+    <div id="progress" class="progress"></div>
+  </div>
+  <pre id="output"></pre>
+
+  <script>
+    function updateCpuUsage() {
+      fetch('/cpu-usage')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('cpuUsage').textContent = data.usage;
+        });
+    }
+
+    function handleHeavyTask() {
+      const output = document.getElementById('output');
+      const progressBar = document.getElementById('progress');
+      output.textContent = ''; // Clear previous output
+      progressBar.style.width = '0%'; // Reset progress bar
+      progressBar.classList.remove('red'); // Reset progress bar color
+      progressBar.textContent = ''; // Clear any previous error text
+      const eventSource = new EventSource('/heavy');
+
+      eventSource.onmessage = function(event) {
+        output.textContent += event.data + '\n';
+        const match = event.data.match(/(\d+)%/);
+        if (match) {
+          progressBar.style.width = match[1] + '%';
+        }
+        if (event.data.includes('Success: Task completed')) {
+          eventSource.close();
+        }
+      };
+
+      eventSource.onerror = function() {
+        if (!output.textContent.includes('Success: Task completed')) {
+          output.textContent += 'Error occurred\n';
+          progressBar.classList.add('red');
+          progressBar.textContent = 'ERROR';
+        }
+        eventSource.close();
+      };
+    }
+
+    document.getElementById('runHeavyTask').addEventListener('click', handleHeavyTask);
+
+    // Update CPU usage every second
+    setInterval(updateCpuUsage, 1000);
+    updateCpuUsage();
+  </script>
+</body>
+</html>

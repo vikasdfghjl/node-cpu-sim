@@ -1,0 +1,59 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+#cpuUsage {
+  font-weight: bold;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  height: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress {
+  background-color: #4caf50;
+  height: 100%;
+  width: 0;
+  transition: width 0.5s ease, background-color 0.5s ease;
+  text-align: center;
+  color: white;
+  line-height: 20px; /* Align text vertically */
+}
+
+.progress.red {
+  background-color: red;
+  color: black; /* Ensure text is visible */
+}
+
+pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  transition: background-color 0.3s ease;
+}
+
+pre.error {
+  background-color: #ffe6e6;
+}
