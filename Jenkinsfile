@@ -5,7 +5,7 @@ pipeline {
         EC2_IP = '13.234.12.112'
         SSH_USER = 'ubuntu'
         SSH_KEY = credentials('SECRET_KEY')
-        GIT_REPO = 'vikasdfghjl/node-cpu-sim'
+        GIT_REPO = 'github.com/vikasdfghjl/node-cpu-sim'
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         GITHUB_PASSWORD = credentials('GITHUB_PASSWORD')
