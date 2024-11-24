@@ -7,8 +7,8 @@ pipeline {
         SSH_KEY = credentials('SECRET_KEY')
         GIT_REPO = 'https://github.com/vikasdfghjl/node-cpu-sim'
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
-        GIT_USERNAME = credentials('GITHUB_USERNAME')
-        GIT_PASSWORD = credentials('GITHUB_PASSWORD')
+        GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        GITHUB_PASSWORD = credentials('GITHUB_PASSWORD')
     }
 
     stages {
