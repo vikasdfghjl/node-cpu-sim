@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Run Heavy Task</title>
   <link rel="stylesheet" href="styles.css">
-</head>
+</body>
 <body>
   <div class="container">
     <div class="info">
@@ -56,10 +56,10 @@
       document.getElementById('buttonPressCount').textContent = buttonPressCount;
       const output = document.getElementById('output');
       const progressBar = document.getElementById('progress');
-      output.textContent = ''; // Clear previous output
-      progressBar.style.width = '0%'; // Reset progress bar
-      progressBar.classList.remove('red'); // Reset progress bar color
-      progressBar.textContent = ''; // Clear any previous error text
+      output.textContent = '';
+      progressBar.style.width = '0%';
+      progressBar.classList.remove('red');
+      progressBar.textContent = '';
       const eventSource = new EventSource('/heavy');
 
       eventSource.onmessage = function(event) {
@@ -67,14 +67,14 @@
         const match = event.data.match(/(\d+)%/);
         if (match) {
           progressBar.style.width = match[1] + '%';
-          progressBar.textContent = match[1] + '%'; // Show percentage inside progress bar
+          progressBar.textContent = match[1] + '%';
         }
         if (event.data.includes('Success: Task completed')) {
           successCount++;
           document.getElementById('successCount').textContent = successCount;
           eventSource.close();
           if (autoRestart) {
-            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
+            setTimeout(handleHeavyTask, 1000);
           }
         }
         if (event.data.includes('Error: Something went wrong')) {
@@ -82,7 +82,7 @@
           document.getElementById('errorCount').textContent = errorCount;
           eventSource.close();
           if (autoRestart) {
-            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
+            setTimeout(handleHeavyTask, 1000);
           }
         }
       };
@@ -93,7 +93,7 @@
           progressBar.classList.add('red');
           progressBar.textContent = 'ERROR';
           if (autoRestart) {
-            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
+            setTimeout(handleHeavyTask, 1000);
           }
         }
         eventSource.close();
@@ -105,14 +105,10 @@
       autoRestart = event.target.checked;
     });
 
-    // Reset counters on page load
     window.onload = resetCounters;
-
-    // Update CPU usage every second
     setInterval(updateCpuUsage, 1000);
     updateCpuUsage();
 
-    // Keep the window alive in the background
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         document.title = 'Heavy Task Running...';

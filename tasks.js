@@ -19,12 +19,12 @@ function simulateHeavyTask(req, res) {
   let progress = 0;
 
   const interval = setInterval(() => {
-    progress += faker.datatype.number({ min: 1, max: 20 }); // Random progress increment between 1 and 20
-    if (progress > 100) progress = 100; // Ensure progress does not exceed 100
+    progress += faker.datatype.number({ min: 1, max: 20 });
+    if (progress > 100) progress = 100;
     const elapsedTime = Date.now() - startTime;
 
     osUtils.cpuUsage((usage) => {
-      if (progress < 100 && Math.random() < 0.1) { // 10% chance of error
+      if (progress < 100 && Math.random() < 0.1) {
         clearInterval(interval);
         errorCount++;
         res.write(`data: Error: Something went wrong\n\n`);
@@ -41,7 +41,7 @@ function simulateHeavyTask(req, res) {
         }
       }
     });
-  }, faker.datatype.number({ min: 500, max: 1500 })); // Random interval between 500ms and 1500ms
+  }, faker.datatype.number({ min: 500, max: 1500 }));
 }
 
 module.exports = { getCpuUsage, simulateHeavyTask };
