@@ -20,6 +20,7 @@ pipeline {
                         cd ${PROJECT_DIR}
                         git pull https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
                         sudo docker-compose down || true
+                        sudo docker network prune -f || true
                         sudo docker-compose up -d --build
                     EOF
                     """
