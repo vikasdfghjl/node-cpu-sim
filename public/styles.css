@@ -1,47 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  transition: background 0.3s, color 0.3s;
 }
 
-#cpuUsage {
+#cpuUsage, #buttonPressCount, #successCount, #errorCount {
+  display: block;
+  margin-top: 10px;
   font-weight: bold;
+  color: black; /* Change text color to black */
 }
 
 button {
+  margin-top: 10px;
   padding: 10px 20px;
   font-size: 16px;
-  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2196F3;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #ddd;
+  background-color: #1976D2;
 }
 
 .progress-bar {
   width: 100%;
-  background-color: #f4f4f4;
-  border: 1px solid #ddd;
-  margin-top: 10px;
-  height: 20px;
-  position: relative;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
   overflow: hidden;
+  margin-top: 10px;
 }
 
 .progress {
-  background-color: #4caf50;
-  height: 100%;
+  height: 30px;
   width: 0;
-  transition: width 0.5s ease, background-color 0.5s ease;
+  background-color: #4caf50;
   text-align: center;
-  color: white;
-  line-height: 20px; /* Align text vertically */
+  line-height: 30px;
+  color: black;
+  transition: width 0.4s ease;
+  animation: slide-in 0.5s ease-out;
 }
 
 .progress.red {
-  background-color: red;
-  color: black; /* Ensure text is visible */
+  background-color: #f44336;
 }
 
 pre {
@@ -49,11 +63,115 @@ pre {
   padding: 10px;
   border: 1px solid #ddd;
   margin-top: 10px;
+  color: black;
   white-space: pre-wrap;
   word-wrap: break-word;
   transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 800px;
+  overflow: auto;
 }
 
 pre.error {
   background-color: #ffe6e6;
+}
+
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: background 0.3s;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-top: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: background-color 0.4s, transform 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: transform 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 50px;
+  margin: 5px 0;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  animation: slide-in 0.5s ease-out;
+}
+
+.info-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

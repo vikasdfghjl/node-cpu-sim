@@ -5,72 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Run Heavy Task</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-    }
-
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-
-    .slider.round {
-      border-radius: 34px;
-    }
-
-    .slider.round:before {
-      border-radius: 50%;
-    }
-  </style>
 </head>
 <body>
-  <div>CPU Usage: <span id="cpuUsage">Loading...</span>%</div>
-  <div>Button Press Count: <span id="buttonPressCount">0</span></div>
-  <div>Success Count: <span id="successCount">0</span></div>
-  <div>Error Count: <span id="errorCount">0</span></div>
-  <button id="runHeavyTask">Run Heavy Task</button>
-  <label class="switch">
-    <input type="checkbox" id="autoRestart">
-    <span class="slider round"></span>
-  </label>
-  <span>Auto Restart</span>
-  <div class="progress-bar">
-    <div id="progress" class="progress"></div>
+  <div class="container">
+    <div class="info">
+      <div class="info-card">CPU Usage: <span id="cpuUsage">Loading...</span>%</div>
+      <div class="info-card">Button Press Count: <span id="buttonPressCount">0</span></div>
+      <div class="info-row">
+        <div class="info-card">Success Count: <span id="successCount">0</span></div>
+        <div class="info-card">Error Count: <span id="errorCount">0</span></div>
+      </div>
+    </div>
+    <button id="runHeavyTask">Run Heavy Task</button>
+    <label class="switch">
+      <input type="checkbox" id="autoRestart">
+      <span class="slider round"></span>
+    </label>
+    <span>Auto Restart</span>
+    <div class="progress-bar">
+      <div id="progress" class="progress"></div>
+    </div>
   </div>
   <pre id="output"></pre>
 
@@ -113,6 +67,7 @@
         const match = event.data.match(/(\d+)%/);
         if (match) {
           progressBar.style.width = match[1] + '%';
+          progressBar.textContent = match[1] + '%'; // Show percentage inside progress bar
         }
         if (event.data.includes('Success: Task completed')) {
           successCount++;
@@ -122,11 +77,12 @@
             setTimeout(handleHeavyTask, 1000); // Restart after a short delay
           }
         }
-        if (event.data.includes('ErrorCount:')) {
-          const errorMatch = event.data.match(/ErrorCount: (\d+)/);
-          if (errorMatch) {
-            errorCount = parseInt(errorMatch[1], 10);
-            document.getElementById('errorCount').textContent = errorCount;
+        if (event.data.includes('Error: Something went wrong')) {
+          errorCount++;
+          document.getElementById('errorCount').textContent = errorCount;
+          eventSource.close();
+          if (autoRestart) {
+            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
           }
         }
       };
