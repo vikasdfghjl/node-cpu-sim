@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    networks:
+      - my-network
     
   prom-server:
     image: prom/prometheus
@@ -12,8 +14,16 @@ services:
       - 9090:9090
     volumes:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - my-network
   
   grafana:
     image: grafana/grafana-oss
     ports:
       - 3000:3000
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
