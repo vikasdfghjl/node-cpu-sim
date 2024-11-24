@@ -4,9 +4,11 @@ pipeline {
     environment {
         EC2_IP = '13.234.12.112'
         SSH_USER = 'ubuntu'
-        SSH_KEY = 'path-to-your-private-key'
+        SSH_KEY = credentials('SECRET_KEY')
         GIT_REPO = 'https://github.com/vikasdfghjl/node-cpu-sim'
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
+        GIT_USERNAME = credentials('GITHUB_USERNAME')
+        GIT_PASSWORD = credentials('GITHUB_PASSWORD')
     }
 
     stages {
@@ -16,10 +18,11 @@ pipeline {
                     sh """
                     ssh -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
-                        git pull ${GIT_REPO}
-                        ./build.sh
-                        docker-compose down
-                        docker-compose up -d
+                        git pull https://${GIT_USERNAME}:${GIT_PASSWORD}@${GIT_REPO}
+                        if [ \$(docker ps -q) ]; then
+                            docker-compose down
+                        fi
+                        docker-compose up -d --build
                     EOF
                     """
                 }
