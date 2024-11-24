@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
                         git pull https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
                         if [ \$(docker ps -q) ]; then
