@@ -4,7 +4,7 @@ const { getCpuUsage, simulateHeavyTask } = require('./tasks');
 const client = require('prom-client');
 const { register } = client;
 const app = express();
-const port = 3000;
+const port = 8000;
 
 
 const collectDefaultMetrics = client.collectDefaultMetrics;

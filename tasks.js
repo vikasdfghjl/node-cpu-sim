@@ -1,6 +1,8 @@
-
 const osUtils = require('os-utils');
 const faker = require('faker');
+
+let successCount = 0;
+let errorCount = 0;
 
 function getCpuUsage(req, res) {
   osUtils.cpuUsage((usage) => {
@@ -24,13 +26,17 @@ function simulateHeavyTask(req, res) {
     osUtils.cpuUsage((usage) => {
       if (progress < 100 && Math.random() < 0.1) { // 10% chance of error
         clearInterval(interval);
+        errorCount++;
         res.write(`data: Error: Something went wrong\n\n`);
+        res.write(`data: ErrorCount: ${errorCount}\n\n`);
         res.end();
       } else {
         res.write(`data: ${progress}% - Elapsed time: ${elapsedTime}ms - CPU Usage: ${(usage * 100).toFixed(2)}%\n\n`);
         if (progress === 100) {
           clearInterval(interval);
+          successCount++;
           res.write(`data: Success: Task completed\n\n`);
+          res.write(`data: SuccessCount: ${successCount}\n\n`);
           res.end();
         }
       }

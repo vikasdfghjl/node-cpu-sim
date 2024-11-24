@@ -5,16 +5,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Run Heavy Task</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
   <div>CPU Usage: <span id="cpuUsage">Loading...</span>%</div>
+  <div>Button Press Count: <span id="buttonPressCount">0</span></div>
+  <div>Success Count: <span id="successCount">0</span></div>
+  <div>Error Count: <span id="errorCount">0</span></div>
   <button id="runHeavyTask">Run Heavy Task</button>
+  <label class="switch">
+    <input type="checkbox" id="autoRestart">
+    <span class="slider round"></span>
+  </label>
+  <span>Auto Restart</span>
   <div class="progress-bar">
     <div id="progress" class="progress"></div>
   </div>
   <pre id="output"></pre>
 
   <script>
+    let buttonPressCount = 0;
+    let successCount = 0;
+    let errorCount = 0;
+    let autoRestart = false;
+
+    function resetCounters() {
+      buttonPressCount = 0;
+      successCount = 0;
+      errorCount = 0;
+      document.getElementById('buttonPressCount').textContent = buttonPressCount;
+      document.getElementById('successCount').textContent = successCount;
+      document.getElementById('errorCount').textContent = errorCount;
+    }
+
     function updateCpuUsage() {
       fetch('/cpu-usage')
         .then(response => response.json())
@@ -24,6 +98,8 @@
     }
 
     function handleHeavyTask() {
+      buttonPressCount++;
+      document.getElementById('buttonPressCount').textContent = buttonPressCount;
       const output = document.getElementById('output');
       const progressBar = document.getElementById('progress');
       output.textContent = ''; // Clear previous output
@@ -39,7 +115,19 @@
           progressBar.style.width = match[1] + '%';
         }
         if (event.data.includes('Success: Task completed')) {
+          successCount++;
+          document.getElementById('successCount').textContent = successCount;
           eventSource.close();
+          if (autoRestart) {
+            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
+          }
+        }
+        if (event.data.includes('ErrorCount:')) {
+          const errorMatch = event.data.match(/ErrorCount: (\d+)/);
+          if (errorMatch) {
+            errorCount = parseInt(errorMatch[1], 10);
+            document.getElementById('errorCount').textContent = errorCount;
+          }
         }
       };
 
@@ -48,16 +136,34 @@
           output.textContent += 'Error occurred\n';
           progressBar.classList.add('red');
           progressBar.textContent = 'ERROR';
+          if (autoRestart) {
+            setTimeout(handleHeavyTask, 1000); // Restart after a short delay
+          }
         }
         eventSource.close();
       };
     }
 
     document.getElementById('runHeavyTask').addEventListener('click', handleHeavyTask);
+    document.getElementById('autoRestart').addEventListener('change', (event) => {
+      autoRestart = event.target.checked;
+    });
+
+    // Reset counters on page load
+    window.onload = resetCounters;
 
     // Update CPU usage every second
     setInterval(updateCpuUsage, 1000);
     updateCpuUsage();
+
+    // Keep the window alive in the background
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        document.title = 'Heavy Task Running...';
+      } else {
+        document.title = 'Run Heavy Task';
+      }
+    });
   </script>
 </body>
 </html>
