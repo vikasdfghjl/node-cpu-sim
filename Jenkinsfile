@@ -19,8 +19,8 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
                         git pull https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
-                        docker-compose down || true
-                        docker-compose up -d --build
+                        sudo docker-compose down || true
+                        sudo docker-compose up -d --build
                     EOF
                     """
                 }
