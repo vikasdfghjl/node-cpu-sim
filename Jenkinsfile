@@ -36,7 +36,7 @@ pipeline {
                 script {
                     sh """
                     if [ \$(docker ps -q) ]; then
-                        sudo docker-compose down
+                        docker-compose down
                     fi
                     """
                 }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    sudo docker-compose up -d --build
+                    docker-compose up -d --build
                     """
                 }
             }
