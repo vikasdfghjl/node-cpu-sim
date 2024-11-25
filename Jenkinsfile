@@ -29,7 +29,8 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
-                        sudo git pull  << EOF
+                        sudo git pull
+                    EOF
                     """
                 }
             }
