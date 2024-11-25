@@ -4,7 +4,6 @@ pipeline {
     environment {
         EC2_IP = '3.6.43.50'
         SSH_USER = 'ubuntu'
-        SSH_KEY = credentials('SECRET_KEY')
         GIT_REPO = 'github.com/vikasdfghjl/node-cpu-sim'
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
@@ -18,6 +17,7 @@ pipeline {
                     sh """
                     docker --version
                     docker ps
+                    ls
                     """
                 }
             }
