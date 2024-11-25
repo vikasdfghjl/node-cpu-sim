@@ -4,4 +4,4 @@ global:
 scrape_configs:
   - job_name: prometheus
     static_configs:
-      - targets: ["13.234.12.112:8000"]  # IP address of the target machine
+      - targets: ["3.6.43.50:8000"]  # IP address of the target machine
