@@ -18,15 +18,12 @@ pipeline {
                     sh """
                     docker --version
                     docker ps
-                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                     cd ${PROJECT_DIR}
                     sudo git pull
                     if [ \$(docker ps -q) ]; then
                         sudo docker-compose down
                     fi
                     sudo docker-compose up -d --build
-                    exit
-                    EOF
                     """
                 }
             }
