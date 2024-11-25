@@ -29,7 +29,7 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
-                        sudo git pull https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
+                        sudo git pull -q https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
                     EOF
                     """
                 }
