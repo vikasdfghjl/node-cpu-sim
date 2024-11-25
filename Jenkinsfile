@@ -18,6 +18,9 @@ pipeline {
                     sh """
                     docker --version
                     docker ps
+                    if [ ! -d "${PROJECT_DIR}" ]; then
+                        git clone https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO} ${PROJECT_DIR}
+                    fi
                     cd ${PROJECT_DIR}
                     sudo git pull
                     if [ \$(docker ps -q) ]; then
