@@ -9,14 +9,17 @@ pipeline {
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         GITHUB_PASSWORD = credentials('GITHUB_PASSWORD')
-        SSH_CMD = "ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP}"
     }
 
     stages {
         stage('SSH into EC2') {
             steps {
                 script {
-                    sh "${SSH_CMD} exit"
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
+                    exit
+EOF
+                    """
                 }
             }
         }
@@ -24,25 +27,45 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ${SSH_CMD} << EOF
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
-                        git pull
-                        EOF
+                        sudo git pull
+EOF
                     """
                 }
             }
         }
-        stage('Manage Docker Containers') {
+        stage('Stop Docker Containers') {
             steps {
                 script {
                     sh """
-                        ${SSH_CMD} << EOF
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         if [ \$(sudo docker ps -q) ]; then
                             sudo docker-compose down
                         fi
+EOF
+                    """
+                }
+            }
+        }
+        stage('Prune Docker Network') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         sudo docker network prune -f || true
+EOF
+                    """
+                }
+            }
+        }
+        stage('Start Docker Containers') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         sudo docker-compose up -d --build
-                        EOF
+EOF
                     """
                 }
             }
