@@ -12,17 +12,58 @@ pipeline {
     }
 
     stages {
-        stage('SSH into EC2 and Fetch Changes') {
+        stage('SSH into EC2') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
+                    exit
+                    EOF
+                    """
+                }
+            }
+        }
+        stage('Fetch Changes') {
             steps {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         cd ${PROJECT_DIR}
                         git pull https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GIT_REPO}
+                    EOF
+                    """
+                }
+            }
+        }
+        stage('Stop Docker Containers') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         if [ \$(sudo docker ps -q) ]; then
                             sudo docker-compose down
                         fi
+                    EOF
+                    """
+                }
+            }
+        }
+        stage('Prune Docker Network') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         sudo docker network prune -f || true
+                    EOF
+                    """
+                }
+            }
+        }
+        stage('Start Docker Containers') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                         sudo docker-compose up -d --build
                     EOF
                     """
