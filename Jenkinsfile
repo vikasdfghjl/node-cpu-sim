@@ -23,6 +23,7 @@ pipeline {
                         sudo docker-compose down
                     fi
                     sudo docker-compose up -d --build
+                    exit
                     EOF
                     """
                 }
