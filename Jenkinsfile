@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    sudo git pull
+                    git pull
                     """
                 }
             }
