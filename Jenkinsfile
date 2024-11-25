@@ -17,7 +17,7 @@ pipeline {
                 script {
                     sh """
                     docker --version
-                    docker ps
+                    sudo docker ps
                     ssh -o StrictHostKeyChecking=no -tt -i ${SSH_KEY} ${SSH_USER}@${EC2_IP} << EOF
                     cd ${PROJECT_DIR}
                     sudo git pull
