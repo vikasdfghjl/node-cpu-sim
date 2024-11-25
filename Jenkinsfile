@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EC2_IP = '13.234.12.112'
+        EC2_IP = '3.109.151.218'
         SSH_USER = 'ubuntu'
         SSH_KEY = credentials('SECRET_KEY')
         GIT_REPO = 'github.com/vikasdfghjl/node-cpu-sim'
