@@ -26,7 +26,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                    cd ${PROJECT_DIR}
                     sudo git pull
                     """
                 }
