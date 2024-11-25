@@ -12,17 +12,41 @@ pipeline {
     }
 
     stages {
-        stage('Deploy Application') {
+        stage('Check Docker') {
             steps {
                 script {
                     sh """
                     docker --version
                     docker ps
-                    cd /home/ubuntu/node-cpu-sim
+                    """
+                }
+            }
+        }
+        stage('Update Repository') {
+            steps {
+                script {
+                    sh """
+                    cd ${PROJECT_DIR}
                     sudo git pull
+                    """
+                }
+            }
+        }
+        stage('Stop Docker Containers') {
+            steps {
+                script {
+                    sh """
                     if [ \$(docker ps -q) ]; then
                         sudo docker-compose down
                     fi
+                    """
+                }
+            }
+        }
+        stage('Start Docker Containers') {
+            steps {
+                script {
+                    sh """
                     sudo docker-compose up -d --build
                     """
                 }
