@@ -35,7 +35,7 @@ pipeline {
                     sh """
                     CONTAINERS_RUNNING=\$(docker ps -q)
                     if [ -n "\$CONTAINERS_RUNNING" ]; then
-                        docker-compose down
+                        docker-compose down 
                     else
                         echo "No running containers"
                     fi
