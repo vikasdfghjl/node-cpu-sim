@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        EC2_IP = '3.6.43.50'
-        SSH_USER = 'ubuntu'
         GIT_REPO = 'github.com/vikasdfghjl/node-cpu-sim'
         PROJECT_DIR = '/home/ubuntu/node-cpu-sim'
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
